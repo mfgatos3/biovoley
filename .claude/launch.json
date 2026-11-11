@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "biovoley",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["biovoley-lab/herramientas/servir.py", "biovoley-lab", "8080"],
+      "port": 8080
+    }
+  ]
+}

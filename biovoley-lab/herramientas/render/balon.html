@@ -1,0 +1,65 @@
+<!doctype html><meta charset="utf-8"><body style="margin:0;background:#123">
+<canvas id="c" width="800" height="800"></canvas>
+<script src="../../vendor/three.min.js"></script>
+<script>
+// Balón de voleibol de 18 paneles para el fondo: textura, relieve de costuras y brillo
+const AZUL = [14, 58, 190], AMARILLO = [255, 178, 0], BLANCO = [240, 238, 230];
+function texturas(W, H) {
+  const col = document.createElement('canvas'), rel = document.createElement('canvas');
+  col.width = rel.width = W; col.height = rel.height = H;
+  const gc = col.getContext('2d'), gr = rel.getContext('2d');
+  const ic = gc.createImageData(W, H), ir = gr.createImageData(W, H);
+  const ruido = (x, y) => { const s = Math.sin(x * 12.9898 + y * 78.233) * 43758.5453; return s - Math.floor(s); };
+  for (let py = 0; py < H; py++) for (let px = 0; px < W; px++) {
+    const u = (px + 0.5) / W, v = (py + 0.5) / H, th = v * Math.PI, ph = u * 2 * Math.PI;
+    const d = [-Math.cos(ph) * Math.sin(th), Math.cos(th), Math.sin(ph) * Math.sin(th)];
+    const ab = d.map(Math.abs), e = ab[0] > ab[1] ? (ab[0] > ab[2] ? 0 : 2) : (ab[1] > ab[2] ? 1 : 2);
+    const a = d[(e + 1) % 3] / ab[e], b = d[(e + 2) % 3] / ab[e];
+    const tira = Math.min(2, Math.floor(((a + 1) / 2) * 3));
+    let c = tira === 1 ? BLANCO : e === 0 ? AZUL : e === 1 ? AMARILLO : (d[e] > 0 ? AZUL : AMARILLO);
+    // distancia a la costura más cercana (bordes de cara y entre tiras)
+    const dist = Math.min(1 - Math.abs(a), 1 - Math.abs(b), Math.abs(a - 1 / 3), Math.abs(a + 1 / 3)) * ab[e];
+    const surco = Math.exp(-Math.pow(dist / 0.0105, 2));
+    const grano = (ruido(px, py) - 0.5) * 0.05;
+    const k = 1 - 0.62 * surco + grano * 0.5;
+    const i = (py * W + px) * 4;
+    ic.data[i] = c[0] * k; ic.data[i + 1] = c[1] * k; ic.data[i + 2] = c[2] * k; ic.data[i + 3] = 255;
+    const h = 255 * (1 - 0.9 * surco) + grano * 120;
+    ir.data[i] = ir.data[i + 1] = ir.data[i + 2] = Math.max(0, Math.min(255, h)); ir.data[i + 3] = 255;
+  }
+  gc.putImageData(ic, 0, 0); gr.putImageData(ir, 0, 0);
+  return { col, rel };
+}
+window.preparar = function () {
+  const R = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true, alpha: true, preserveDrawingBuffer: true });
+  R.setSize(800, 800, false); R.setClearColor(0, 0);
+  R.outputEncoding = THREE.sRGBEncoding; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.0;
+  const S = new THREE.Scene();
+  // estudio para los reflejos: paneles de luz grandes
+  const est = new THREE.Scene(); est.background = new THREE.Color(0x0a1224);
+  const panel = (w, h, c, x, y, z) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c, side: THREE.DoubleSide })); m.position.set(x, y, z); m.lookAt(0, 0, 0); est.add(m); };
+  panel(6, 4, new THREE.Color(6, 6, 5.6), -5, 6, 5); panel(3, 6, new THREE.Color(1.6, 1.2, .7), 7, 0, 2); panel(5, 3, new THREE.Color(.5, .9, 2.4), 2, 2, -7);
+  const pm = new THREE.PMREMGenerator(R); S.environment = pm.fromScene(est, 0.04).texture;
+  const key = new THREE.DirectionalLight(0xfff3e0, 2.3); key.position.set(-3, 4, 4); S.add(key);
+  const rim = new THREE.DirectionalLight(0x8fc4ff, 1.6); rim.position.set(4, 1.5, -3); S.add(rim);
+  S.add(new THREE.HemisphereLight(0xdfe8ff, 0x1a2440, 0.35));
+  const { col, rel } = texturas(2048, 1024);
+  const map = new THREE.CanvasTexture(col); map.encoding = THREE.sRGBEncoding; map.anisotropy = 8;
+  const bump = new THREE.CanvasTexture(rel);
+  const mat = new THREE.MeshPhysicalMaterial({ map, bumpMap: bump, bumpScale: 0.022, roughness: 0.46, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.32 });
+  const bola = new THREE.Mesh(new THREE.SphereGeometry(1, 160, 120), mat);
+  const piv = new THREE.Group(); piv.add(bola); S.add(piv);
+  piv.rotation.set(0.42, 0, -0.32); // eje inclinado para que se vea girar en diagonal
+  const cam = new THREE.PerspectiveCamera(20, 1, 0.1, 50); cam.position.set(0, 0, 6.1); cam.lookAt(0, 0, 0);
+  window.cuadro = (k, n) => { bola.rotation.y = (k / n) * Math.PI * 2; R.render(S, cam); };
+  return 1;
+};
+// arma la hoja de cuadros reducidos a 'lado' px
+window.hoja = function (n, cols, lado) {
+  const filas = Math.ceil(n / cols), h = document.createElement('canvas');
+  h.width = cols * lado; h.height = filas * lado;
+  const g = h.getContext('2d'); g.imageSmoothingQuality = 'high';
+  for (let k = 0; k < n; k++) { window.cuadro(k, n); g.drawImage(document.getElementById('c'), (k % cols) * lado, Math.floor(k / cols) * lado, lado, lado); }
+  return h.toDataURL('image/webp', 0.86);
+};
+</script>

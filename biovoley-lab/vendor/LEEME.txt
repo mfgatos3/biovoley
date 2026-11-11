@@ -1,0 +1,18 @@
+Librerías incluidas en BioVoley Lab para que funcione sin depender de internet.
+
+three.min.js (Three.js r128) — motor de los videos 3D. Licencia MIT (ver three-LICENSE.txt).
+  Fuente: https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js
+
+mediapipe/ (MediaPipe Tasks Vision 0.10.14 y modelos Pose Landmarker) — detección de postura. Licencia Apache 2.0 (Google).
+  Fuente: https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14
+          https://storage.googleapis.com/mediapipe-models/pose_landmarker/
+  vision_bundle.js es vision_bundle.mjs con la extensión .js para que cualquier servidor lo entregue como JavaScript.
+
+fuentes/ — Barlow, Barlow Condensed y JetBrains Mono (Google Fonts). Licencia SIL OFL 1.1.
+
+Si falta esta carpeta, la app intenta descargar lo mismo de internet.
+
+personaje/
+  Cuerpos, ropa, zapatos, pelo, ojos y cejas derivados de los recursos de MakeHuman
+  (makehumancommunity.org), publicados con licencia CC0 1.0. El esqueleto se redujo y la
+  ropa se adaptó con herramientas/personaje.py.

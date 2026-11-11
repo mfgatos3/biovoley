@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BioVoley Lab</title>
+<meta name="description" content="BioVoley Lab prototype: hydration, fatigue, camera technique analysis and tactics for school and youth volleyball.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2218%22 fill=%22%23f4c01b%22/%3E%3Cpath d=%22M20 2C28 10 30 22 24 37M3.5 14C14 15 24 22 30 34M6 31C12 22 24 14 37 15%22 fill=%22none%22 stroke=%22%231c4fd0%22 stroke-width=%223.2%22/%3E%3C/svg%3E">
+<link rel="stylesheet" href="vendor/fuentes/fuentes.css">
+<link rel="stylesheet" href="css/estilos.css?v=20261111b">
+</head>
+<body>
+<div class="arena" aria-hidden="true">
+    <div class="arena-luz"></div>
+    <div class="arena-texto">BIOVOLEY · SPORTS SCIENCE · </div>
+    <svg class="arena-cancha" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMax slice">
+      <defs>
+        <linearGradient id="arPiso" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a3d" stop-opacity=".05"/><stop offset="1" stop-color="#ff8a3d" stop-opacity=".26"/></linearGradient>
+        <pattern id="arMalla" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M14 0H0V14" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="1"/></pattern>
+      </defs>
+      <path d="M520 250 L1080 250 L1520 700 L80 700 Z" fill="url(#arPiso)"/>
+      <g class="arena-lineas"><path d="M520 250 L1080 250 L1520 700 L80 700 Z"/><path d="M393 380H1207"/><path d="M456 315H1144"/><path d="M320 455H1280"/></g>
+      <rect x="357" y="232" width="886" height="72" fill="url(#arMalla)"/>
+      <g class="arena-red"><path d="M357 232H1243"/><path d="M357 304H1243"/><path d="M357 380V200M1243 380V200" class="arena-poste"/></g>
+    </svg>
+    <canvas id="bvFondo" class="fondo"></canvas>
+  </div>
+<div class="app">
+  <aside class="side" id="side">
+    <a class="brand" href="#panel">
+      <svg class="brand-ball" viewBox="0 0 40 40" aria-hidden="true">
+        <circle cx="20" cy="20" r="18" class="ball-a"/>
+        <path d="M20 2 C 28 10, 30 22, 24 37" class="ball-b"/>
+        <path d="M3.5 14 C 14 15, 24 22, 30 34" class="ball-b"/>
+        <path d="M6 31 C 12 22, 24 14, 37 15" class="ball-b"/>
+      </svg>
+      <span class="brand-name">BioVoley <span>Lab</span></span>
+    </a>
+    <nav class="nav" id="nav" aria-label="Sections"></nav>
+    <div class="side-foot">
+      <select id="teamSel" class="team-sel" aria-label="Active team"></select>
+      <div class="team-row"><span class="note" id="saveState"></span><button class="btn-link" id="btnNewTeam" type="button">+ New team</button></div>
+    </div>
+  </aside>
+  <main class="main">
+    <header class="vh">
+      <div class="vh-text">
+        <div class="vh-eyebrow" id="vEyebrow"></div>
+        <h1 id="vTitle">Panel</h1>
+        <p class="vh-sub"><span id="vSub"></span><span class="vh-tags" id="vTags"></span></p>
+      </div>
+      <div class="vh-tools" id="vTools"></div>
+    </header>
+    <section id="view" class="view" tabindex="-1"></section>
+  </main>
+</div>
+<div id="tooltip" class="tooltip" role="status" hidden></div>
+<div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="js/nucleo.js?v=20261111b"></script>
+<script src="js/graficos.js?v=20261111b"></script>
+<script src="js/gestos.js?v=20261111b"></script>
+<script src="js/bebida.js?v=20261111b"></script>
+<script src="js/personaje.js?v=20261111b"></script>
+<script src="js/video3d.js?v=20261111b"></script>
+<script src="js/fondo.js?v=20261111b"></script>
+<script src="js/vistas/inicio.js?v=20261111b"></script>
+<script src="js/vistas/panel.js?v=20261111b"></script>
+<script src="js/vistas/jugadores.js?v=20261111b"></script>
+<script src="js/vistas/hidratacion.js?v=20261111b"></script>
+<script src="js/vistas/fatiga.js?v=20261111b"></script>
+<script src="js/vistas/camara.js?v=20261111b"></script>
+<script src="js/vistas/aterrizaje.js?v=20261111b"></script>
+<script src="js/vistas/pizarra.js?v=20261111b"></script>
+<script src="js/vistas/modelos.js?v=20261111b"></script>
+<script src="js/vistas/calentamiento.js?v=20261111b"></script>
+<script src="js/vistas/fundamentos.js?v=20261111b"></script>
+<script src="js/vistas/guia.js?v=20261111b"></script>
+<script>BV.start();</script>
+</body>
+</html>
